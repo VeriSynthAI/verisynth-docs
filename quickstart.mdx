@@ -1,6 +1,6 @@
 ---
-title: Quickstart
-description: Generate your first synthetic dataset with VeriSynth Core.
+title: "Quickstart"
+description: "Generate your first synthetic dataset with VeriSynth Core."
 ---
 
 # Quickstart
@@ -15,10 +15,9 @@ VeriSynth runs 100% locally, needs **no GPU**, and produces both a **synthetic d
 
 ```bash
 pip install verisynth-core
-````
+```
 
-That’s all you need.
-VeriSynth ships as a self-contained Python package with zero external dependencies beyond standard data libraries.
+That’s all you need. VeriSynth ships as a self-contained Python package with zero external dependencies beyond standard data libraries.
 
 ---
 
@@ -37,6 +36,8 @@ Example data:
 | 001        | 62  | 31.4 | 1      | 7.8   | 148         | 90           |
 | 002        | 45  | 28.6 | 0      | 6.1   | 132         | 82           |
 | 003        | 33  | 24.1 | 0      | 5.3   | 116         | 74           |
+
+You can also grab sample data here: https://github.com/VeriSynthAI/verisynth-core/tree/main/data
 
 ---
 
@@ -61,11 +62,11 @@ verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
 
 Each run creates a verifiable JSON proof describing:
 
-* Dataset hashes (SHA-256)
-* Model configuration (Gaussian Copula)
-* Random seed (for reproducibility)
-* Privacy and correlation metrics
-* Merkle root for integrity checking
+- Dataset hashes (SHA-256)
+- Model configuration (Gaussian Copula)
+- Random seed (for reproducibility)
+- Privacy and correlation metrics
+- Merkle root for integrity checking
 
 Example:
 
@@ -118,5 +119,4 @@ Running this command again will yield **identical Merkle roots and metrics**, pr
 
 ---
 
-> VeriSynth runs anywhere: laptop, air-gapped lab, or enterprise VPC.
-> No GPUs required · No cloud dependencies · MIT licensed.
+> VeriSynth runs anywhere: laptop, air-gapped lab, or enterprise VPC. No GPUs required · No cloud dependencies · MIT licensed.
