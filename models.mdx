@@ -1,0 +1,173 @@
+---
+title: Models
+description: Overview of the AI models supported by VeriSynth for generating synthetic data.
+---
+
+# Models in VeriSynth
+
+VeriSynth uses machine learning models to learn the **statistical structure** of real data and generate **synthetic data** that behaves like the real world — without exposing sensitive records.
+
+Each model is designed to balance **realism**, **privacy**, and **computational efficiency**.  
+The system is modular, so users can plug in new synthesis engines over time.
+
+---
+
+## Current Model: Gaussian Copula (GC)
+
+The **Gaussian Copula Synthesizer** is the first and default model in VeriSynth Core.  
+It’s a fast, deterministic, and lightweight model for **tabular synthetic data** — perfect for most structured datasets.
+
+### How It Works
+
+1. **Learn relationships**  
+   GC learns pairwise correlations between all columns in your dataset.  
+   It transforms them into a continuous Gaussian space where relationships are easier to model.
+
+2. **Model dependencies**  
+   A multivariate Gaussian distribution is fit to the transformed data.  
+   This captures how each variable depends on others (e.g., *age ↔ BMI ↔ blood pressure*).
+
+3. **Sample synthetic data**  
+   New synthetic samples are drawn from this learned distribution, then mapped back to the original data space.
+
+4. **Output verification**  
+   The generated dataset is post-processed and evaluated for correlation deltas, privacy risk, and consistency metrics.
+
+---
+
+### Example
+
+Let’s say your real dataset has these correlations:
+
+| Variable Pair | Correlation |
+|----------------|-------------|
+| Age ↔ BMI | 0.42 |
+| BMI ↔ Systolic BP | 0.61 |
+| Age ↔ Glucose | 0.58 |
+
+The synthetic dataset produced by VeriSynth will preserve these relationships closely, often within a **correlation delta of ±0.1** — enough to be statistically realistic for most analytical and ML tasks.
+
+> Instead of random noise, GC learns your dataset’s *statistical DNA* and regenerates it faithfully.
+
+---
+
+### Strengths
+
+| Feature | Description |
+|----------|--------------|
+| **Lightweight** | Runs entirely on CPU — no GPUs required |
+| **Deterministic** | Same seed → same result, ideal for reproducibility |
+| **Explainable** | Transparent mathematical model (no black box) |
+| **Fast** | Generates up to 1M+ rows in seconds |
+| **Auditable** | Outputs proof receipts with correlation metrics |
+
+---
+
+### Limitations
+
+| Limitation | Description |
+|-------------|-------------|
+| **Linear correlations only** | GC struggles with nonlinear or multimodal relationships |
+| **Limited categorical complexity** | High-cardinality categories may be oversimplified |
+| **No temporal or sequential modeling** | Best for static, tabular datasets |
+
+---
+
+## Roadmap: Upcoming Models
+
+VeriSynth Core is model-agnostic — future releases will expand into **deep generative** and **privacy-enhanced** models.
+
+| Model | Type | Status | Description |
+|--------|------|---------|-------------|
+| **CTGAN** | GAN-based tabular | 🧩 Planned | Captures nonlinear relationships and rare categories |
+| **TVAE** | Variational Autoencoder | 🧩 Planned | Produces smoother synthetic distributions and uncertainty estimates |
+| **DP-GC** | Differentially Private Gaussian Copula | 🧩 Planned | Adds formal privacy bounds (ε) to correlation modeling |
+| **TimeSynth** | Sequential/time-series | 🧩 Planned | Models synthetic patient timelines, transactions, or sensor data |
+| **ImageSynth** | Generative Vision | 🚧 Exploratory | Extends proof-based synthesis to visual data |
+
+---
+
+## Model Selection Philosophy
+
+We believe every synthetic data generator should be:
+
+1. **Understandable** — transparent about how it learns and samples  
+2. **Reproducible** — deterministic seeds, reproducible metrics  
+3. **Verifiable** — accompanied by measurable fidelity and privacy proofs  
+4. **Modular** — easy to swap models as new techniques evolve  
+
+VeriSynth is built as a **modular framework**, so you can run:
+```bash
+verisynth data/patients.csv -o out/ --model gaussian_copula
+# (future)
+verisynth data/patients.csv -o out/ --model ctgan
+````
+
+---
+
+## Model Registry (Coming Soon)
+
+We’re working on a **model registry system** that will let users:
+
+* View available models (`verisynth models list`)
+* Inspect metadata, dependencies, and required hardware
+* Register custom synthesis engines via plugin
+* Benchmark models on fidelity vs privacy
+
+Example:
+
+```bash
+verisynth models list
+# → gaussian_copula, ctgan, tvae, dp_gc
+```
+
+---
+
+## Model Validation Metrics
+
+Each model is evaluated using:
+
+| Metric                           | Description                                        |
+| -------------------------------- | -------------------------------------------------- |
+| **Correlation delta (Δ)**        | Measures difference in variable relationships      |
+| **KS test (p-value)**            | Checks distributional similarity                   |
+| **Naive re-identification risk** | Approximates privacy exposure                      |
+| **Synthetic utility**            | Performance of ML models trained on synthetic data |
+
+These metrics are logged to `proof.json` for transparency and reproducibility.
+
+---
+
+## Example CLI Run (GC Model)
+
+```bash
+verisynth data/finance.csv -o out/ --rows 50000 --model gaussian_copula --seed 42
+```
+
+Produces:
+
+```
+📁 out/synthetic.csv
+🧾 out/proof.json
+```
+
+With proof:
+
+```json
+{
+  "model": { "engine": "gaussian_copula", "seed": 42 },
+  "metrics": { "corr_mean_abs_delta": 0.15, "naive_reid_risk": 0.0 }
+}
+```
+
+---
+
+## Summary
+
+| Principle           | Description                                                             |
+| ------------------- | ----------------------------------------------------------------------- |
+| **Start simple**    | GC gives accurate, transparent tabular synthesis                        |
+| **Build modularly** | New models can plug into the same proof pipeline                        |
+| **Stay verifiable** | Every model, no matter how complex, will always produce a proof receipt |
+
+---

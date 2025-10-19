@@ -104,19 +104,6 @@ Because VeriSynth uses deterministic seeding (`--seed`), you can always reproduc
 verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
 ```
 
-Running this command again will yield **identical Merkle roots and metrics**, proving the process is verifiable and consistent.
+Running this command again, with the same `seed` value will yield **identical Merkle roots and metrics**, proving the process is verifiable and consistent.
 
 ---
-
-## 7. Next steps
-
-| Goal                            | Where to go                    |
-| ------------------------------- | ------------------------------ |
-| Understand proof receipts       | [Proofs →](./proofs)           |
-| Use programmatically via Python | [API Reference →](./api)       |
-| Learn the synthesis models      | [Models →](./models)           |
-| Explore open-source philosophy  | [Open Source →](./open-source) |
-
----
-
-> VeriSynth runs anywhere: laptop, air-gapped lab, or enterprise VPC. No GPUs required · No cloud dependencies · MIT licensed.

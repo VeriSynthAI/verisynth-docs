@@ -127,7 +127,6 @@ You can test various parameters to ensure consistent behavior:
 | ------------------ | ------------------------------- | --------------------------------- |
 | Small input file   | `--rows 100`                    | Completes instantly               |
 | Large output       | `--rows 1000000`                | Slower, but deterministic         |
-| No proof file      | `--no-proof`                    | Runs, but skips JSON output       |
 | Custom output path | `--proof out/custom_proof.json` | Proof saved to custom path        |
 | Invalid path       | wrong file                      | Clean error message (exit code 1) |
 
@@ -154,21 +153,20 @@ You can run VeriSynth tests automatically as part of your pipeline.
 Example GitHub Action:
 
 ```yaml
-name: VeriSynth Test
+name: Test
 on: [push, pull_request]
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - name: Install VeriSynth
-        run: pip install -e ".[dev]"
-      - name: Run synthetic test
-        run: verisynth data/sample_patients.csv -o out/ --rows 500 --seed 42
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: pip install pytest pytest-cov
+      - run: pytest --cov=verisynth
 ```
 
 ---
@@ -193,5 +191,3 @@ CLI testing in VeriSynth confirms three pillars of trust:
 3. **Privacy** — synthetic data is generated without copying real data
 
 ---
-
-> VeriSynth CLI is built for scientific rigor — testable, reproducible, and verifiable every time.

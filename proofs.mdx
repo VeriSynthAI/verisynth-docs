@@ -1,0 +1,203 @@
+---
+title: Proof Receipts
+description: Learn how VeriSynth generates cryptographic proof receipts for every synthetic dataset.
+---
+
+# Introduction
+
+Every VeriSynth run produces a **proof receipt** — a small, cryptographically verifiable JSON file that records *exactly* how a synthetic dataset was generated.
+
+This proof enables **reproducibility**, **auditability**, and **trust** in the synthetic data lifecycle — without revealing the original data itself.
+
+---
+
+## Why Proofs Matter
+
+When working with sensitive datasets (e.g. healthcare, finance, clinical trials), you need to prove that:
+- No real individuals were exposed  
+- The data wasn’t tampered with  
+- The synthetic results can be verified independently  
+
+Traditional anonymization or “black-box” synthetic data tools can’t provide this level of assurance.
+
+VeriSynth changes that by generating **verifiable cryptographic receipts** with every run.
+
+---
+
+## What’s in a Proof Receipt?
+
+Each proof file (`proof.json`) contains key metadata about the synthesis process:
+
+```json
+{
+  "verisynth_version": "core-0.1.0",
+  "timestamp_utc": "2025-10-16T00:23:54Z",
+  "input": {
+    "path": "data/patients.csv",
+    "rows": 10,
+    "sha256": "05c493ca63a4...82b7",
+    "merkle_root": "ddc322ce1f1d...a4c"
+  },
+  "output": {
+    "path": "out/synthetic.csv",
+    "rows": 1000000,
+    "sha256": "c4452526fa8c...acb9",
+    "merkle_root": "8045dd531825...c31"
+  },
+  "model": {
+    "engine": "GaussianCopulaSynthesizer",
+    "seed": 42,
+    "metrics": {
+      "corr_mean_abs_delta": 0.23,
+      "naive_reid_risk": 0.0
+    }
+  },
+  "proof": "merkle_root: 8045dd531825e51b8241d67732074492cad53fb415b8b393f556a7483eac8c31"
+}
+````
+
+---
+
+## Core Components
+
+| Field                 | Description                                              |
+| --------------------- | -------------------------------------------------------- |
+| **verisynth_version** | The exact software version used for the run              |
+| **timestamp_utc**     | UTC time of generation                                   |
+| **input / output**    | File paths, row counts, SHA-256 hashes, and Merkle roots |
+| **model**             | Model type, seed, and fidelity metrics                   |
+| **proof**             | Final Merkle root representing dataset lineage           |
+
+---
+
+## 1. File Hashing (SHA-256)
+
+Each dataset (input and synthetic output) is hashed using **SHA-256**, producing a unique 64-character fingerprint.
+
+Example:
+
+```bash
+sha256sum data/patients.csv
+# → 05c493ca63a434a419da68828ec08eef23b997c94f7588ccdf5f8c5ac4ee82b7
+```
+
+Even a one-character change in the file alters the hash entirely.
+
+This ensures **data integrity** — you can confirm that the file used to create synthetic data hasn’t changed.
+
+---
+
+## 2. Merkle Roots
+
+VeriSynth combines all row-level hashes into a **Merkle tree**, creating a single compact fingerprint (Merkle root) representing the entire dataset.
+
+This allows independent verification *without needing the full dataset.*
+
+### How it works
+
+1. Each record (row) is hashed individually.
+2. Pairs of hashes are combined and re-hashed up the tree.
+3. The final root hash represents the entire dataset’s integrity.
+
+This approach is inspired by blockchain data structures — but runs fully offline.
+
+---
+
+## 3. Statistical Metrics
+
+Each proof includes quantitative fidelity and privacy diagnostics:
+
+| Metric                    | Meaning                                                                 | Goal                      |
+| ------------------------- | ----------------------------------------------------------------------- | ------------------------- |
+| **corr_mean_abs_delta**   | Average difference in correlation between real and synthetic data       | Lower = better realism    |
+| **naive_reid_risk**       | Fraction of synthetic rows statistically too similar to any real record | Lower = better privacy    |
+| *(optional)* `ks_pvalues` | Kolmogorov–Smirnov similarity scores for numeric columns                | Higher = better alignment |
+
+These values help users balance **realism vs. privacy**, and are logged for auditability.
+
+---
+
+## 4. Deterministic Seeds
+
+Each run uses a **random seed** that makes the entire synthesis process reproducible.
+
+Example:
+
+```bash
+verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
+```
+
+Re-running with the same seed, input, and model produces **identical output** and **identical proof.json** — a strong guarantee for regulated environments.
+
+---
+
+## 5. Proof Verification (Coming Soon)
+
+You’ll soon be able to verify proofs using:
+
+```bash
+verisynth verify out/proof.json
+```
+
+This command will:
+
+* Re-hash your input and output files
+* Recompute Merkle roots
+* Compare against the proof receipt
+* Report if the dataset is unchanged and valid
+
+Expected output:
+
+```
+Verifying proof.json ...
+✅ Merkle roots match
+✅ Input/output hashes verified
+✅ Metrics within tolerance
+
+Result: VERIFIED (deterministic run)
+```
+
+---
+
+## 6. Reproducibility in Action
+
+Try running VeriSynth twice with the same parameters:
+
+```bash
+verisynth data/patients.csv -o out1/ --rows 1000 --seed 42
+verisynth data/patients.csv -o out2/ --rows 1000 --seed 42
+```
+
+Then compare proofs:
+
+```bash
+diff out1/proof.json out2/proof.json
+```
+
+If your proof system is working correctly, the files will be **identical** — down to the Merkle root.
+
+---
+
+## 7. Future Extensions
+
+Planned features for the proof system:
+
+| Feature                       | Description                                                     |
+| ----------------------------- | --------------------------------------------------------------- |
+| **ed25519 signatures**        | Allow signed, verifiable proofs with public keys                |
+| **ZK verification layer**     | Optional zero-knowledge proof mode for third-party attestations |
+| **Diff privacy tracking (ε)** | Embed DP parameters directly in proofs                          |
+| **Remote proof viewer**       | Visualize proofs via the VeriSynth web dashboard                |
+
+---
+
+## Summary
+
+| Principle           | Description                                          |
+| ------------------- | ---------------------------------------------------- |
+| **Integrity**       | Every dataset is hashed, verified, and traceable     |
+| **Reproducibility** | Same input + seed → identical proof                  |
+| **Privacy**         | No real records retained or exposed                  |
+| **Auditability**    | Proof receipts can be independently verified offline |
+
+---

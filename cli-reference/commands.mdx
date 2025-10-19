@@ -50,16 +50,46 @@ Proof: out/proof.json (Merkle verified)
 
 ## Global Options
 
-| Flag         | Description                                                 | Default           |
-| ------------ | ----------------------------------------------------------- | ----------------- |
-| `--rows`     | Number of synthetic rows to generate                        | `1000`            |
-| `--seed`     | Random seed for deterministic synthesis                     | `42`              |
-| `--model`    | Synthesis engine (`gaussian_copula`, `ctgan`, `tvae`, etc.) | `gaussian_copula` |
-| `--proof`    | Custom proof file path                                      | `proof.json`      |
-| `--no-proof` | Disable proof generation entirely                           | Off               |
-| `--quiet`    | Suppress non-essential console output                       | Off               |
-| `--version`  | Print CLI version                                           | —                 |
-| `--help`     | Display help menu                                           | —                 |
+| Flag       | Description                                                   |
+| ---------- | ------------------------------------------------------------- |
+| `--input`  | Path to input CSV file                                        |
+| `--output` | Output directory for synthetic data and proof                 |
+| `--rows`   | Number of synthetic rows to generate (default: 1000)         |
+| `--seed`   | Random seed for deterministic reproducibility                 |
+| `--schema` | Path to YAML schema configuration file (optional)            |
+
+---
+
+## Schema Configuration
+
+VeriSynth supports explicit field mapping and exclusion through YAML schema configuration files. This gives you fine-grained control over which fields to synthesize and how to handle data types.
+
+### Schema Configuration Format
+
+```yaml
+exclude: ["patient_id", "address"]
+types:
+  age: int
+  bmi: float
+  smoker: bool
+  hba1c: float
+model:
+  engine: GaussianCopula
+  seed: 42
+```
+
+### Configuration Options
+
+- **`exclude`**: List of field names to exclude from synthesis (e.g., IDs, addresses)
+- **`types`**: Explicit type mappings for fields (supports: `int`, `float`, `bool`, `str`)
+- **`model`**: Model configuration including engine and seed
+
+### Benefits
+
+- **Privacy**: Exclude sensitive identifiers and PII
+- **Control**: Explicit type handling instead of automatic detection
+- **Reproducibility**: Schema configuration is included in proof receipts
+- **Validation**: Built-in validation ensures configuration correctness
 
 ---
 
@@ -84,119 +114,3 @@ verisynth data/transactions.csv -o out/ --model ctgan --rows 250000
 ```
 
 ---
-
-## `verisynth verify` *(planned)*
-
-Verifies a previously generated `proof.json` file against your input and output datasets.
-
-```bash
-verisynth verify out/proof.json
-```
-
-Example output:
-
-```
-Verifying proof.json ...
-✅ Merkle roots match
-✅ Input/output hashes verified
-✅ Metrics within tolerance
-
-Result: VERIFIED (deterministic run)
-```
-
-Use this to confirm that a shared synthetic dataset and proof receipt haven’t been altered since generation.
-
----
-
-## `verisynth inspect` *(planned)*
-
-Display summary statistics and correlations from a synthetic dataset.
-
-```bash
-verisynth inspect out/synthetic.csv
-```
-
-Example:
-
-```
-Summary of out/synthetic.csv
-Rows: 1000000
-Columns: 12
-Fidelity metrics:
-  - Mean correlation Δ: 0.18
-  - Privacy risk (naive re-ID): 0.0
-Generated: 2025-10-16T00:23:54Z
-```
-
----
-
-## `verisynth api` *(planned)*
-
-Serve the synthesis engine via a local REST API using FastAPI.
-
-```bash
-verisynth api --port 8080
-```
-
-This exposes an endpoint:
-
-```
-POST /synthesize
-{
-  "input_path": "data/patients.csv",
-  "rows": 10000,
-  "seed": 42
-}
-```
-
-Response:
-
-```json
-{
-  "synthetic_path": "out/synthetic.csv",
-  "proof_path": "out/proof.json",
-  "metrics": { "corr_delta": 0.23, "risk": 0.0 }
-}
-```
-
----
-
-## `verisynth test` *(planned)*
-
-Run internal diagnostic tests on the installed VeriSynth environment.
-
-```bash
-verisynth test
-```
-
-Checks:
-
-* Model availability
-* Proof library integrity
-* Dependency compatibility
-* CLI version sync
-
----
-
-## CLI Exit Codes
-
-| Code | Meaning                                  |
-| ---- | ---------------------------------------- |
-| `0`  | Success                                  |
-| `1`  | General error (e.g., invalid input path) |
-| `2`  | Model training failure                   |
-| `3`  | Proof verification failure               |
-| `4`  | I/O or file permission error             |
-
----
-
-## Next Steps
-
-* [Options & Flags →](./options)
-* [Output Files →](./output)
-* [Proof Verification →](./verification)
-* [Automation & CI/CD →](./integration)
-
----
-
-> VeriSynth CLI — designed for developers who want **control, reproducibility, and verifiable privacy**.
