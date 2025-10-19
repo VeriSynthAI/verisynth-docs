@@ -1,97 +1,107 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: Introduction
+description: Introduction to VeriSynth — verifiable synthetic data generation for AI, analytics, and privacy.
 ---
 
-## Setting up
+# 🧬 Introduction
 
-Get your documentation site up and running in minutes.
+**VeriSynth** is an open-source framework for **verifiable synthetic data generation** — designed to help teams safely share and analyze sensitive datasets without exposing real individuals.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+Built for developers, data scientists, and privacy researchers, VeriSynth transforms real datasets into **statistically faithful** synthetic versions, complete with **cryptographic proof receipts** that anyone can verify independently.
 
-## Make it yours
+---
 
-Design a docs site that looks great and empowers your users.
+## ✨ Why VeriSynth?
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+Synthetic data isn’t new — but **trust** is.
 
-## VeriSynth Docs
+Most synthetic data tools are black boxes. You’re told to “trust” that the data is private and realistic, but there’s no way to verify it. VeriSynth changes that.
 
-VeriSynth Developer Documentation
+✅ **Verifiable** — Each run produces a tamper-evident `proof.json` receipt with dataset hashes, model parameters, and metrics.  
+✅ **Transparent** — Built entirely in open source under the MIT license.  
+✅ **Reproducible** — Deterministic seeds make every result traceable and reproducible.  
+✅ **Private by design** — No real records are ever copied, reused, or identifiable.  
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+---
 
-## Need inspiration?
+## 🧩 How It Works (High Level)
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+VeriSynth learns the **statistical relationships** within your dataset — not the identities.
+
+Example:
+> If real data shows that *older individuals with high BMI are more likely to have elevated blood pressure*, VeriSynth preserves those patterns without retaining any real patient data.
+
+The result: **synthetic data that behaves like the real world**, ready for analysis, testing, or AI model training.
+
+```bash
+# Generate 1M synthetic rows locally
+pip install verisynth-core
+verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
+````
+
+This produces:
+
+```
+📁 out/synthetic.csv
+🧾 out/proof.json
+```
+
+---
+
+## 📜 Proof Receipts
+
+Every synthesis run outputs a JSON proof file containing:
+
+* Input/output dataset hashes (SHA-256)
+* Correlation & privacy metrics
+* Model version, parameters, and random seed
+* Merkle root for integrity verification
+
+Example:
+
+```json
+{
+  "verisynth_version": "core-0.1.0",
+  "metrics": {
+    "corr_mean_abs_delta": 0.12,
+    "naive_reid_risk": 0.01
+  },
+  "input":  { "rows": 10, "sha256": "…82b7" },
+  "output": { "rows": 1000000, "sha256": "…acb9" },
+  "proof": "merkle_root: …c31"
+}
+```
+
+---
+
+## 🧱 Trusted Foundations
+
+VeriSynth is powered by:
+
+* **Gaussian Copula** for tabular synthesis
+* **SHA-256 / Merkle trees** for integrity proofs
+* **Deterministic seeding** for reproducibility
+* **Python-first design** for extensibility and CLI simplicity
+
+---
+
+## 🚀 Use Cases
+
+* Training ML models without exposing real data
+* Sharing medical or financial datasets securely
+* Benchmarking AI systems with realistic-but-fake data
+* Creating test environments for analytics pipelines
+
+---
+
+## 🌐 Learn More
+
+* [Getting Started →](./getting-started)
+* [CLI Reference →](./cli)
+* [Proof Receipts →](./proofs)
+* [Open Source Philosophy →](./open-source)
+
+---
+
+> VeriSynth Core is open-source (MIT) and runs 100% locally.
+> No signup · No GPUs needed · On-prem / VPC friendly.

@@ -1,0 +1,197 @@
+---
+title: Testing & Verification
+description: How to test and verify VeriSynth CLI runs for reproducibility, accuracy, and privacy.
+---
+
+# 🧪 CLI Testing & Verification
+
+The **VeriSynth CLI** was designed for trust — every run can be **verified**, **reproduced**, and **audited** without ever exposing sensitive data.
+
+This guide explains how to:
+- Test VeriSynth locally  
+- Verify your proof receipts  
+- Reproduce a run deterministically  
+- Debug unexpected differences
+
+---
+
+## ✅ 1. Verify Installation
+
+After installation, confirm that the CLI is available:
+
+```bash
+verisynth --version
+````
+
+Expected output:
+
+```
+VeriSynth Core v0.1.0
+```
+
+Run the built-in help command:
+
+```bash
+verisynth --help
+```
+
+If both commands succeed, your environment is ready.
+
+---
+
+## 🧩 2. Generate a Test Dataset
+
+Use the included demo dataset for a quick local test:
+
+```bash
+verisynth data/sample_patients.csv -o out/ --rows 1000 --seed 42
+```
+
+Output:
+
+```
+📁 out/synthetic.csv
+🧾 out/proof.json
+```
+
+The CLI will also print a short summary:
+
+```
+VeriSynth — Synthetic Data Report
+========================================
+Input: data/sample_patients.csv
+Output: out/synthetic.csv
+Engine: GaussianCopula | Seed: 42
+Fidelity: corr Δ=0.23 | Privacy risk=0.0
+Proof: out/proof.json (Merkle verified)
+```
+
+---
+
+## 🧾 3. Validate the Proof Receipt
+
+Each run produces a JSON proof receipt (`proof.json`):
+
+```json
+{
+  "verisynth_version": "core-0.1.0",
+  "input":  { "rows": 10, "sha256": "…82b7" },
+  "output": { "rows": 1000000, "sha256": "…acb9" },
+  "metrics": { "corr_mean_abs_delta": 0.12, "naive_reid_risk": 0.01 },
+  "proof": "merkle_root: …c31"
+}
+```
+
+To validate integrity:
+
+1. Compute your own SHA-256 hash of the input and output files.
+2. Compare them with the hashes inside `proof.json`.
+3. Verify that the Merkle root matches — if it does, your run is **provably unchanged**.
+
+*(The upcoming `verisynth verify` command will automate this.)*
+
+---
+
+## 🔁 4. Test Reproducibility
+
+Because VeriSynth uses deterministic seeding, identical runs will produce identical proofs and Merkle roots.
+
+Try it:
+
+```bash
+verisynth data/sample_patients.csv -o out1/ --rows 1000 --seed 42
+verisynth data/sample_patients.csv -o out2/ --rows 1000 --seed 42
+```
+
+Compare both proofs:
+
+```bash
+diff out1/proof.json out2/proof.json
+```
+
+Expected:
+
+```
+(no differences)
+```
+
+This confirms full reproducibility — a cornerstone of VeriSynth’s trust model.
+
+---
+
+## ⚙️ 5. Test Edge Cases
+
+You can test various parameters to ensure consistent behavior:
+
+| Scenario           | Command                         | Expected Result                   |
+| ------------------ | ------------------------------- | --------------------------------- |
+| Small input file   | `--rows 100`                    | Completes instantly               |
+| Large output       | `--rows 1000000`                | Slower, but deterministic         |
+| No proof file      | `--no-proof`                    | Runs, but skips JSON output       |
+| Custom output path | `--proof out/custom_proof.json` | Proof saved to custom path        |
+| Invalid path       | wrong file                      | Clean error message (exit code 1) |
+
+---
+
+## 🧱 6. Exit Codes
+
+The CLI provides predictable exit codes for scripting and CI/CD.
+
+| Code | Meaning                       |
+| ---- | ----------------------------- |
+| `0`  | Success                       |
+| `1`  | Invalid input or missing file |
+| `2`  | Model synthesis error         |
+| `3`  | Proof verification failed     |
+| `4`  | I/O or permission issue       |
+
+---
+
+## 🧰 7. Continuous Integration (CI/CD)
+
+You can run VeriSynth tests automatically as part of your pipeline.
+
+Example GitHub Action:
+
+```yaml
+name: VeriSynth Test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install VeriSynth
+        run: pip install -e ".[dev]"
+      - name: Run synthetic test
+        run: verisynth data/sample_patients.csv -o out/ --rows 500 --seed 42
+```
+
+---
+
+## 🧩 8. Debugging Tips
+
+| Issue                    | Cause                             | Fix                                    |
+| ------------------------ | --------------------------------- | -------------------------------------- |
+| `CLI not found`          | PATH not updated                  | Reinstall with `pip install -e .`      |
+| `Permission denied`      | Output folder restricted          | Use `--output` in a writable directory |
+| `Metrics missing`        | Proof disabled                    | Remove `--no-proof` flag               |
+| Non-deterministic output | Different seeds or model versions | Use `--seed` consistently              |
+
+---
+
+## ✅ Summary
+
+CLI testing in VeriSynth confirms three pillars of trust:
+
+1. **Reproducibility** — identical seeds = identical outputs
+2. **Integrity** — proof receipts and Merkle roots verify correctness
+3. **Privacy** — synthetic data is generated without copying real data
+
+---
+
+> VeriSynth CLI is built for scientific rigor — testable, reproducible, and verifiable every time.

@@ -1,0 +1,192 @@
+---
+title: Development
+description: Developer guide for building, testing, and contributing to VeriSynth Core.
+---
+
+# 🛠️ Development Guide
+
+Welcome to the **VeriSynth Core** developer guide.  
+This document walks you through setting up your local environment, running the CLI, writing tests, and contributing to the project.
+
+VeriSynth Core is fully open source (MIT licensed) and welcomes community contributions.
+
+---
+
+## 🧩 1. Clone the Repository
+
+```bash
+git clone https://github.com/verisynth/verisynth-core.git
+cd verisynth-core
+````
+
+---
+
+## 🐍 2. Create a Virtual Environment
+
+We recommend using **Python 3.10+** and a virtual environment for isolation.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # macOS/Linux
+# OR
+.venv\Scripts\activate     # Windows
+```
+
+---
+
+## 📦 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+For development (with linting, testing, and docs):
+
+```bash
+pip install -e ".[dev]"
+```
+
+---
+
+## 🧠 4. Project Structure
+
+```
+verisynth-core/
+│
+├── verisynth/              # Core library
+│   ├── cli.py              # CLI entrypoint
+│   ├── synth.py            # Synthesis logic (Gaussian Copula, etc.)
+│   ├── proof.py            # Merkle root + hashing utilities
+│   ├── metrics.py          # Correlation + privacy metrics
+│   └── __init__.py
+│
+├── data/                   # Sample datasets
+├── tests/                  # Unit tests
+├── out/                    # Synthetic output + proof receipts (ignored in .gitignore)
+├── README.md
+├── setup.py / pyproject.toml
+└── requirements.txt
+```
+
+---
+
+## ⚙️ 5. Run the CLI (Development Mode)
+
+You can run VeriSynth directly from source:
+
+```bash
+python -m verisynth.cli data/sample_patients.csv -o out/ --rows 1000
+```
+
+Or after install:
+
+```bash
+verisynth data/sample_patients.csv -o out/ --rows 1000
+```
+
+---
+
+## 🧪 6. Testing
+
+We use **pytest** as our primary testing framework.
+
+Run all tests:
+
+```bash
+pytest
+```
+
+Run a single test file:
+
+```bash
+pytest tests/test_synth.py -v
+```
+
+To see coverage:
+
+```bash
+pytest --cov=verisynth --cov-report=term-missing
+```
+
+---
+
+## 🧰 7. Linting & Formatting
+
+VeriSynth uses `black` and `flake8` for code style consistency.
+
+```bash
+black verisynth tests
+flake8 verisynth
+```
+
+Optional pre-commit hook:
+
+```bash
+pre-commit install
+```
+
+---
+
+## 🧬 8. Contributing
+
+We welcome pull requests from the community!
+
+**Basic PR process:**
+
+1. Fork the repository
+2. Create a new branch (`feature/add-metrics`, `fix/cli-output`, etc.)
+3. Commit cleanly with clear messages
+4. Run `pytest` before pushing
+5. Submit your PR and link to any related issue
+
+Example commit:
+
+```bash
+git checkout -b feature/add-proof-verifier
+git add .
+git commit -m "feat: added local proof verification"
+git push origin feature/add-proof-verifier
+```
+
+---
+
+## 🔗 9. Publishing (for Maintainers)
+
+Tag a release:
+
+```bash
+git tag -a v0.1.0 -m "Initial public release"
+git push origin v0.1.0
+```
+
+Build and upload to PyPI:
+
+```bash
+python -m build
+twine upload dist/*
+```
+
+---
+
+## 🧩 10. Development Roadmap
+
+| Area                                 | Status     | Notes                              |
+| ------------------------------------ | ---------- | ---------------------------------- |
+| **Core Synthesis (Gaussian Copula)** | ✅          | Working prototype                  |
+| **Differential Privacy metrics**     | 🧩 Planned | Add `diffprivlib` epsilon tracking |
+| **FastAPI microservice**             | 🧩 Planned | REST endpoint for `/synthesize`    |
+| **Proof verification tool**          | 🧩 Planned | Local CLI verifier                 |
+| **UI Proof Viewer (React)**          | 🧩 Planned | Open source dashboard for receipts |
+
+---
+
+## ❤️ Community
+
+Join the discussion, report issues, or propose features:
+
+* GitHub: [github.com/verisynth/verisynth-core/issues](https://github.com/verisynth/verisynth-core/issues)
+* Twitter: [@VeriSynthAI](https://twitter.com/VeriSynthAI)
+
+---
+
+> VeriSynth Core — built for developers who care about both **data utility** and **trust**.

@@ -1,0 +1,122 @@
+---
+title: Quickstart
+description: Generate your first synthetic dataset with VeriSynth Core.
+---
+
+# ⚡️ Quickstart
+
+Let’s generate your first **verifiable synthetic dataset** — right from your terminal.
+
+VeriSynth runs 100% locally, needs **no GPU**, and produces both a **synthetic dataset** and a **cryptographic proof receipt** for auditability.
+
+---
+
+## 🧩 1. Install VeriSynth Core
+
+```bash
+pip install verisynth-core
+````
+
+That’s all you need.
+VeriSynth ships as a self-contained Python package with zero external dependencies beyond standard data libraries.
+
+---
+
+## 📂 2. Prepare your dataset
+
+Start with any CSV file — for example, a small tabular dataset of patients, transactions, or IoT readings.
+
+```bash
+data/patients.csv
+```
+
+Example data:
+
+| patient_id | age | bmi  | smoker | hba1c | systolic_bp | diastolic_bp |
+| ---------- | --- | ---- | ------ | ----- | ----------- | ------------ |
+| 001        | 62  | 31.4 | 1      | 7.8   | 148         | 90           |
+| 002        | 45  | 28.6 | 0      | 6.1   | 132         | 82           |
+| 003        | 33  | 24.1 | 0      | 5.3   | 116         | 74           |
+
+---
+
+## 🧠 3. Generate synthetic data
+
+Run VeriSynth directly from the CLI:
+
+```bash
+verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
+```
+
+✅ This will produce two files:
+
+```
+📁 out/synthetic.csv   # Synthetic dataset
+🧾 out/proof.json      # Cryptographic proof receipt
+```
+
+---
+
+## 🧾 4. Inspect the proof receipt
+
+Each run creates a verifiable JSON proof describing:
+
+* Dataset hashes (SHA-256)
+* Model configuration (Gaussian Copula)
+* Random seed (for reproducibility)
+* Privacy and correlation metrics
+* Merkle root for integrity checking
+
+Example:
+
+```json
+{
+  "verisynth_version": "core-0.1.0",
+  "metrics": { "corr_mean_abs_delta": 0.12, "naive_reid_risk": 0.01 },
+  "input":  { "rows": 10, "sha256": "…82b7" },
+  "output": { "rows": 1000000, "sha256": "…acb9" },
+  "proof": "merkle_root: …c31"
+}
+```
+
+---
+
+## 📊 5. Explore your synthetic dataset
+
+The generated data preserves the **statistical structure** of your original dataset — correlations, distributions, and realistic relationships — without containing any real records.
+
+Try viewing it in pandas:
+
+```python
+import pandas as pd
+df = pd.read_csv("out/synthetic.csv")
+df.head()
+```
+
+---
+
+## 🔁 6. Reproduce your results
+
+Because VeriSynth uses deterministic seeding (`--seed`), you can always reproduce the exact same synthetic dataset and proof receipt from the same input file.
+
+```bash
+verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
+```
+
+Running this command again will yield **identical Merkle roots and metrics**, proving the process is verifiable and consistent.
+
+---
+
+## 🧰 7. Next steps
+
+| Goal                            | Where to go                    |
+| ------------------------------- | ------------------------------ |
+| Understand proof receipts       | [Proofs →](./proofs)           |
+| Use programmatically via Python | [API Reference →](./api)       |
+| Learn the synthesis models      | [Models →](./models)           |
+| Explore open-source philosophy  | [Open Source →](./open-source) |
+
+---
+
+> VeriSynth runs anywhere: laptop, air-gapped lab, or enterprise VPC.
+> No GPUs required · No cloud dependencies · MIT licensed.

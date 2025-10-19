@@ -1,0 +1,143 @@
+---
+title: CLI Introduction
+description: Overview of the VeriSynth command-line interface (CLI) for generating verifiable synthetic data.
+---
+
+# 💻 CLI Reference — Introduction
+
+The **VeriSynth CLI** provides a simple, reproducible way to generate privacy-safe synthetic datasets from the command line.
+
+It’s ideal for:
+- Data scientists who want to quickly synthesize CSV datasets  
+- Privacy engineers who need deterministic, verifiable runs  
+- Developers integrating VeriSynth into pipelines, notebooks, or CI/CD  
+
+---
+
+## 🧩 Why a CLI?
+
+VeriSynth was designed to **run locally** and **without external dependencies**.  
+The CLI lets you:
+- Generate synthetic datasets in seconds  
+- Produce cryptographic proof receipts automatically  
+- Reproduce any previous run using deterministic seeding  
+- Integrate into any pipeline (Bash, Airflow, CI/CD, notebooks, etc.)
+
+You own the data — VeriSynth never sends it to the cloud.
+
+---
+
+## ⚡ Quick Example
+
+```bash
+verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
+````
+
+Output:
+
+```
+📁 out/synthetic.csv   # Synthetic dataset
+🧾 out/proof.json      # Cryptographic proof receipt
+```
+
+Result summary:
+
+```
+VeriSynth — Synthetic Data Report
+========================================
+Input: data/patients.csv
+Output: out/synthetic.csv
+Engine: GaussianCopula | Seed: 42
+Fidelity: corr Δ=0.23 | Privacy risk=0.0
+Proof: out/proof.json (Merkle verified)
+```
+
+---
+
+## 🧠 Command Overview
+
+| Command                        | Description                                |
+| ------------------------------ | ------------------------------------------ |
+| `verisynth`                    | Generate synthetic data and proof receipts |
+| `verisynth --help`             | Show usage options                         |
+| `verisynth --version`          | Display version info                       |
+| `verisynth verify` *(planned)* | Verify a proof.json file independently     |
+
+Each command runs fully offline, using local system resources.
+
+---
+
+## ⚙️ Command Syntax
+
+```bash
+verisynth <input_csv> -o <output_dir> [options]
+```
+
+**Options:**
+
+| Flag         | Description                                        | Default           |
+| ------------ | -------------------------------------------------- | ----------------- |
+| `--rows`     | Number of synthetic rows to generate               | 1000              |
+| `--seed`     | Random seed for deterministic generation           | 42                |
+| `--model`    | Synthesis model (`gaussian_copula`, `ctgan`, etc.) | `gaussian_copula` |
+| `--proof`    | Output proof file path                             | `proof.json`      |
+| `--no-proof` | Disable proof generation                           | Off               |
+| `--quiet`    | Suppress console output                            | Off               |
+
+Example:
+
+```bash
+verisynth data/finance.csv -o out/ --rows 50000 --seed 7 --model gaussian_copula
+```
+
+---
+
+## 🧾 Proof Receipts
+
+Every CLI run produces a **proof.json** — a cryptographic audit record for reproducibility and trust.
+
+Example:
+
+```json
+{
+  "verisynth_version": "core-0.1.0",
+  "input":  { "rows": 10, "sha256": "…82b7" },
+  "output": { "rows": 1000000, "sha256": "…acb9" },
+  "metrics": { "corr_mean_abs_delta": 0.12, "naive_reid_risk": 0.01 },
+  "proof": "merkle_root: …c31"
+}
+```
+
+See the [Proof Receipts →](../../proofs) page for deeper details.
+
+---
+
+## 🧰 Integration Examples
+
+**Local workflow:**
+
+```bash
+verisynth data/patients.csv -o out/
+python train_model.py --data out/synthetic.csv
+```
+
+**CI/CD step:**
+
+```yaml
+- name: Generate synthetic data
+  run: verisynth data/input.csv -o build/ --rows 10000 --seed 123
+```
+
+---
+
+## 📦 Next Steps
+
+* [CLI Options →](./options)
+* [CLI Output →](./output)
+* [Proof Verification →](./verification)
+* [Scripting & Automation →](./integration)
+
+---
+
+> VeriSynth CLI — verifiable, privacy-safe synthetic data from the command line.
+> No cloud. No black boxes. 100% reproducible.
