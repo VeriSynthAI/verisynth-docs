@@ -3,7 +3,7 @@ title: Quickstart
 description: Generate your first synthetic dataset with VeriSynth Core.
 ---
 
-# ⚡️ Quickstart
+# Quickstart
 
 Let’s generate your first **verifiable synthetic dataset** — right from your terminal.
 
@@ -11,7 +11,7 @@ VeriSynth runs 100% locally, needs **no GPU**, and produces both a **synthetic d
 
 ---
 
-## 🧩 1. Install VeriSynth Core
+## 1. Install VeriSynth Core
 
 ```bash
 pip install verisynth-core
@@ -22,7 +22,7 @@ VeriSynth ships as a self-contained Python package with zero external dependenci
 
 ---
 
-## 📂 2. Prepare your dataset
+## 2. Prepare your dataset
 
 Start with any CSV file — for example, a small tabular dataset of patients, transactions, or IoT readings.
 
@@ -40,7 +40,7 @@ Example data:
 
 ---
 
-## 🧠 3. Generate synthetic data
+## 3. Generate synthetic data
 
 Run VeriSynth directly from the CLI:
 
@@ -57,7 +57,7 @@ verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
 
 ---
 
-## 🧾 4. Inspect the proof receipt
+## 4. Inspect the proof receipt
 
 Each run creates a verifiable JSON proof describing:
 
@@ -81,7 +81,7 @@ Example:
 
 ---
 
-## 📊 5. Explore your synthetic dataset
+## 5. Explore your synthetic dataset
 
 The generated data preserves the **statistical structure** of your original dataset — correlations, distributions, and realistic relationships — without containing any real records.
 
@@ -95,7 +95,7 @@ df.head()
 
 ---
 
-## 🔁 6. Reproduce your results
+## 6. Reproduce your results
 
 Because VeriSynth uses deterministic seeding (`--seed`), you can always reproduce the exact same synthetic dataset and proof receipt from the same input file.
 
@@ -107,7 +107,7 @@ Running this command again will yield **identical Merkle roots and metrics**, pr
 
 ---
 
-## 🧰 7. Next steps
+## 7. Next steps
 
 | Goal                            | Where to go                    |
 | ------------------------------- | ------------------------------ |

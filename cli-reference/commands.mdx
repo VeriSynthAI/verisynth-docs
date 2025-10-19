@@ -3,7 +3,7 @@ title: CLI Commands
 description: Command reference for VeriSynth CLI — all supported commands and subcommands.
 ---
 
-# 🧠 CLI Commands
+# CLI Commands
 
 The **VeriSynth CLI** is a lightweight, Python-based command-line interface for generating synthetic datasets and producing verifiable proof receipts.
 
@@ -11,7 +11,7 @@ All commands run **offline** and are designed to integrate easily with Python, C
 
 ---
 
-## 🧩 Base Command: `verisynth`
+## Base Command: `verisynth`
 
 The base command generates synthetic data and outputs both:
 - A **synthetic dataset** (`synthetic.csv`)
@@ -48,7 +48,7 @@ Proof: out/proof.json (Merkle verified)
 
 ---
 
-## ⚙️ Global Options
+## Global Options
 
 | Flag         | Description                                                 | Default           |
 | ------------ | ----------------------------------------------------------- | ----------------- |
@@ -63,7 +63,7 @@ Proof: out/proof.json (Merkle verified)
 
 ---
 
-## 📄 Example Workflows
+## Example Workflows
 
 ### Generate 1M rows from a healthcare dataset
 
@@ -85,7 +85,7 @@ verisynth data/transactions.csv -o out/ --model ctgan --rows 250000
 
 ---
 
-## 🧾 `verisynth verify` *(planned)*
+## `verisynth verify` *(planned)*
 
 Verifies a previously generated `proof.json` file against your input and output datasets.
 
@@ -108,7 +108,7 @@ Use this to confirm that a shared synthetic dataset and proof receipt haven’t 
 
 ---
 
-## 🧠 `verisynth inspect` *(planned)*
+## `verisynth inspect` *(planned)*
 
 Display summary statistics and correlations from a synthetic dataset.
 
@@ -130,7 +130,7 @@ Generated: 2025-10-16T00:23:54Z
 
 ---
 
-## 🧰 `verisynth api` *(planned)*
+## `verisynth api` *(planned)*
 
 Serve the synthesis engine via a local REST API using FastAPI.
 
@@ -161,7 +161,7 @@ Response:
 
 ---
 
-## 🧪 `verisynth test` *(planned)*
+## `verisynth test` *(planned)*
 
 Run internal diagnostic tests on the installed VeriSynth environment.
 
@@ -178,7 +178,7 @@ Checks:
 
 ---
 
-## 💬 CLI Exit Codes
+## CLI Exit Codes
 
 | Code | Meaning                                  |
 | ---- | ---------------------------------------- |
@@ -190,7 +190,7 @@ Checks:
 
 ---
 
-## 🧱 Next Steps
+## Next Steps
 
 * [Options & Flags →](./options)
 * [Output Files →](./output)

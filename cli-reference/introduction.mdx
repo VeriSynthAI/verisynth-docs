@@ -3,7 +3,7 @@ title: CLI Introduction
 description: Overview of the VeriSynth command-line interface (CLI) for generating verifiable synthetic data.
 ---
 
-# 💻 CLI Reference — Introduction
+# Introduction
 
 The **VeriSynth CLI** provides a simple, reproducible way to generate privacy-safe synthetic datasets from the command line.
 
@@ -14,7 +14,7 @@ It’s ideal for:
 
 ---
 
-## 🧩 Why a CLI?
+## Why a CLI?
 
 VeriSynth was designed to **run locally** and **without external dependencies**.  
 The CLI lets you:
@@ -27,7 +27,7 @@ You own the data — VeriSynth never sends it to the cloud.
 
 ---
 
-## ⚡ Quick Example
+## Quick Example
 
 ```bash
 verisynth data/patients.csv -o out/ --rows 1000000 --seed 42
@@ -54,7 +54,7 @@ Proof: out/proof.json (Merkle verified)
 
 ---
 
-## 🧠 Command Overview
+## Command Overview
 
 | Command                        | Description                                |
 | ------------------------------ | ------------------------------------------ |
@@ -67,7 +67,7 @@ Each command runs fully offline, using local system resources.
 
 ---
 
-## ⚙️ Command Syntax
+## Command Syntax
 
 ```bash
 verisynth <input_csv> -o <output_dir> [options]
@@ -92,7 +92,7 @@ verisynth data/finance.csv -o out/ --rows 50000 --seed 7 --model gaussian_copula
 
 ---
 
-## 🧾 Proof Receipts
+## Proof Receipts
 
 Every CLI run produces a **proof.json** — a cryptographic audit record for reproducibility and trust.
 
@@ -112,7 +112,7 @@ See the [Proof Receipts →](../../proofs) page for deeper details.
 
 ---
 
-## 🧰 Integration Examples
+## Integration Examples
 
 **Local workflow:**
 
@@ -130,7 +130,7 @@ python train_model.py --data out/synthetic.csv
 
 ---
 
-## 📦 Next Steps
+## Next Steps
 
 * [CLI Options →](./options)
 * [CLI Output →](./output)

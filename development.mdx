@@ -3,7 +3,7 @@ title: Development
 description: Developer guide for building, testing, and contributing to VeriSynth Core.
 ---
 
-# 🛠️ Development Guide
+# Development Guide
 
 Welcome to the **VeriSynth Core** developer guide.  
 This document walks you through setting up your local environment, running the CLI, writing tests, and contributing to the project.
@@ -12,7 +12,7 @@ VeriSynth Core is fully open source (MIT licensed) and welcomes community contri
 
 ---
 
-## 🧩 1. Clone the Repository
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/verisynth/verisynth-core.git
@@ -21,7 +21,7 @@ cd verisynth-core
 
 ---
 
-## 🐍 2. Create a Virtual Environment
+## 2. Create a Virtual Environment
 
 We recommend using **Python 3.10+** and a virtual environment for isolation.
 
@@ -34,7 +34,7 @@ source .venv/bin/activate  # macOS/Linux
 
 ---
 
-## 📦 3. Install Dependencies
+## 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -48,7 +48,7 @@ pip install -e ".[dev]"
 
 ---
 
-## 🧠 4. Project Structure
+## 4. Project Structure
 
 ```
 verisynth-core/
@@ -70,7 +70,7 @@ verisynth-core/
 
 ---
 
-## ⚙️ 5. Run the CLI (Development Mode)
+## 5. Run the CLI (Development Mode)
 
 You can run VeriSynth directly from source:
 
@@ -86,7 +86,7 @@ verisynth data/sample_patients.csv -o out/ --rows 1000
 
 ---
 
-## 🧪 6. Testing
+## 6. Testing
 
 We use **pytest** as our primary testing framework.
 
@@ -110,7 +110,7 @@ pytest --cov=verisynth --cov-report=term-missing
 
 ---
 
-## 🧰 7. Linting & Formatting
+## 7. Linting & Formatting
 
 VeriSynth uses `black` and `flake8` for code style consistency.
 
@@ -127,7 +127,7 @@ pre-commit install
 
 ---
 
-## 🧬 8. Contributing
+## 8. Contributing
 
 We welcome pull requests from the community!
 
@@ -150,7 +150,7 @@ git push origin feature/add-proof-verifier
 
 ---
 
-## 🔗 9. Publishing (for Maintainers)
+## 9. Publishing (for Maintainers)
 
 Tag a release:
 
@@ -168,7 +168,7 @@ twine upload dist/*
 
 ---
 
-## 🧩 10. Development Roadmap
+## 10. Development Roadmap
 
 | Area                                 | Status     | Notes                              |
 | ------------------------------------ | ---------- | ---------------------------------- |
